@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Panatta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #F4F5F1;
+    --surface: #FFFFFF;
+    --surface-2: #FBFBF9;
+    --text: #1C1B19;
+    --text-muted: #6B6860;
+    --border: #E3E1DB;
+    --accent: #D6472B;
+    --accent-ink: #FFFFFF;
+    --cat-push: #C9633B;
+    --cat-pull: #3E7C8C;
+    --cat-legs: #6E8F5B;
+    --cat-core: #7C6199;
+    --muscle-primary: #C23B2E;
+    --muscle-secondary: #D9A62E;
+    --muscle-none: #DEDBD3;
+    --muscle-outline: #B9B6AC;
+    --shadow: 0 1px 2px rgba(28,27,25,0.07), 0 10px 24px -14px rgba(28,27,25,0.16);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17161A;
+      --surface: #201F24;
+      --surface-2: #242228;
+      --text: #EDEAE4;
+      --text-muted: #A8A39B;
+      --border: #34323A;
+      --accent: #FF6B45;
+      --accent-ink: #1C1B19;
+      --cat-push: #E38257;
+      --cat-pull: #5FA6B8;
+      --cat-legs: #92B27B;
+      --cat-core: #A587C4;
+      --muscle-primary: #E2574A;
+      --muscle-secondary: #E6B84A;
+      --muscle-none: #34323A;
+      --muscle-outline: #48454C;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px -14px rgba(0,0,0,0.55);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17161A;
+    --surface: #201F24;
+    --surface-2: #242228;
+    --text: #EDEAE4;
+    --text-muted: #A8A39B;
+    --border: #34323A;
+    --accent: #FF6B45;
+    --accent-ink: #1C1B19;
+    --cat-push: #E38257;
+    --cat-pull: #5FA6B8;
+    --cat-legs: #92B27B;
+    --cat-core: #A587C4;
+    --muscle-primary: #E2574A;
+    --muscle-secondary: #E6B84A;
+    --muscle-none: #34323A;
+    --muscle-outline: #48454C;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px -14px rgba(0,0,0,0.55);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Public Sans', system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+
+  .app {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px 72px;
+    --cat: var(--cat-push);
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    margin: 0 -20px;
+  }
+
+  .tabs {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    overflow-x: auto;
+  }
+
+  .tab {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 14px 0 10px;
+    border-radius: 11px;
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  .tab__letter {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--tabcat);
+  }
+
+  .tab[aria-selected="true"] {
+    color: var(--text);
+    background: color-mix(in srgb, var(--tabcat) 14%, var(--surface));
+    border-color: color-mix(in srgb, var(--tabcat) 45%, transparent);
+  }
+
+  .masthead {
+    padding: 28px 0 4px;
+  }
+
+  .eyebrow {
+    margin: 0 0 10px;
+    font-weight: 700;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  h1 {
+    margin: 0 0 6px;
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 8vw, 2.9rem);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+  }
+
+  .dayFocus {
+    margin: 0;
+    font-size: 0.86rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .diagrams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .diagram-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 10px 6px 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  .diagram-label {
+    margin: 2px 0 6px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .diagram-card svg {
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+  }
+
+  .silhouette-base rect,
+  .silhouette-base ellipse {
+    fill: var(--muscle-none);
+    stroke: var(--muscle-outline);
+    stroke-width: 1.5;
+  }
+
+  .muscle {
+    stroke: var(--muscle-outline);
+    stroke-width: 1.5;
+    transition: fill 0.15s ease;
+  }
+
+  .muscle[data-state="primary"] { fill: var(--muscle-primary); }
+  .muscle[data-state="secondary"] { fill: var(--muscle-secondary); }
+  .muscle[data-state="none"] { fill: var(--muscle-none); }
+
+  .legend {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 14px 0 0;
+    padding: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot--primary { background: var(--muscle-primary); }
+  .dot--secondary { background: var(--muscle-secondary); }
+  .dot--none { background: var(--muscle-none); border: 1px solid var(--muscle-outline); }
+
+  main { margin-top: 26px; }
+
+  .warmup {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .warmup strong { color: var(--text); }
+
+  .exlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .exercise {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .exercise__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .exercise__row h3 {
+    margin: 0;
+    flex: 1;
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.3;
+  }
+
+  .tag {
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+    color: var(--cat);
+    background: color-mix(in srgb, var(--cat) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cat) 42%, transparent);
+  }
+
+  .meta {
+    margin: 8px 0 0;
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cue {
+    margin: 6px 0 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .colophon {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 420px) {
+    .diagrams { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="app" id="app">
+  <div class="topbar">
+    <nav class="tabs" id="tabs" aria-label="Elegir día"></nav>
+  </div>
+
+  <header class="masthead">
+    <p class="eyebrow">Semana de fuerza · Máquinas Panatta</p>
+    <h1 id="dayName">—</h1>
+    <p class="dayFocus" id="dayFocusText">—</p>
+  </header>
+
+  <section class="diagrams">
+    <div class="diagram-card">
+      <p class="diagram-label">Frente</p>
+      <svg id="svgFront" viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg">
+        <g class="silhouette-base">
+          <ellipse cx="100" cy="38" rx="22" ry="25"/>
+          <rect x="90" y="60" width="20" height="16" rx="6"/>
+          <rect x="52" y="74" width="96" height="70" rx="26"/>
+          <rect x="68" y="140" width="64" height="45" rx="22"/>
+          <rect x="58" y="178" width="84" height="42" rx="24"/>
+          <rect x="18" y="80" width="26" height="70" rx="13"/>
+          <rect x="14" y="146" width="24" height="70" rx="12"/>
+          <ellipse cx="26" cy="222" rx="12" ry="14"/>
+          <rect x="156" y="80" width="26" height="70" rx="13"/>
+          <rect x="162" y="146" width="24" height="70" rx="12"/>
+          <ellipse cx="174" cy="222" rx="12" ry="14"/>
+          <rect x="62" y="216" width="34" height="95" rx="17"/>
+          <rect x="65" y="308" width="28" height="85" rx="14"/>
+          <ellipse cx="79" cy="400" rx="16" ry="9"/>
+          <rect x="104" y="216" width="34" height="95" rx="17"/>
+          <rect x="107" y="308" width="28" height="85" rx="14"/>
+          <ellipse cx="121" cy="400" rx="16" ry="9"/>
+        </g>
+        <ellipse class="muscle" data-muscle="shoulders" cx="34" cy="88" rx="17" ry="16"/>
+        <ellipse class="muscle" data-muscle="shoulders" cx="166" cy="88" rx="17" ry="16"/>
+        <rect class="muscle" data-muscle="chest" x="62" y="88" width="76" height="34" rx="16"/>
+        <rect class="muscle" data-muscle="biceps" x="19" y="92" width="22" height="46" rx="11"/>
+        <rect class="muscle" data-muscle="biceps" x="159" y="92" width="22" height="46" rx="11"/>
+        <rect class="muscle" data-muscle="abs" x="80" y="126" width="40" height="52" rx="14"/>
+        <rect class="muscle" data-muscle="obliques" x="68" y="130" width="14" height="46" rx="7"/>
+        <rect class="muscle" data-muscle="obliques" x="118" y="130" width="14" height="46" rx="7"/>
+        <rect class="muscle" data-muscle="quads" x="64" y="222" width="30" height="82" rx="15"/>
+        <rect class="muscle" data-muscle="quads" x="106" y="222" width="30" height="82" rx="15"/>
+        <rect class="muscle" data-muscle="calves" x="67" y="314" width="24" height="72" rx="12"/>
+        <rect class="muscle" data-muscle="calves" x="109" y="314" width="24" height="72" rx="12"/>
+      </svg>
+    </div>
+    <div class="diagram-card">
+      <p class="diagram-label">Espalda</p>
+      <svg id="svgBack" viewBox="0 0 200 420" xmlns="http://www.w3.org/2000/svg">
+        <g class="silhouette-base">
+          <ellipse cx="100" cy="38" rx="22" ry="25"/>
+          <rect x="90" y="60" width="20" height="16" rx="6"/>
+          <rect x="52" y="74" width="96" height="70" rx="26"/>
+          <rect x="68" y="140" width="64" height="45" rx="22"/>
+          <rect x="58" y="178" width="84" height="42" rx="24"/>
+          <rect x="18" y="80" width="26" height="70" rx="13"/>
+          <rect x="14" y="146" width="24" height="70" rx="12"/>
+          <ellipse cx="26" cy="222" rx="12" ry="14"/>
+          <rect x="156" y="80" width="26" height="70" rx="13"/>
+          <rect x="162" y="146" width="24" height="70" rx="12"/>
+          <ellipse cx="174" cy="222" rx="12" ry="14"/>
+          <rect x="62" y="216" width="34" height="95" rx="17"/>
+          <rect x="65" y="308" width="28" height="85" rx="14"/>
+          <ellipse cx="79" cy="400" rx="16" ry="9"/>
+          <rect x="104" y="216" width="34" height="95" rx="17"/>
+          <rect x="107" y="308" width="28" height="85" rx="14"/>
+          <ellipse cx="121" cy="400" rx="16" ry="9"/>
+        </g>
+        <ellipse class="muscle" data-muscle="shoulders" cx="34" cy="88" rx="17" ry="16"/>
+        <ellipse class="muscle" data-muscle="shoulders" cx="166" cy="88" rx="17" ry="16"/>
+        <rect class="muscle" data-muscle="upper-back" x="66" y="86" width="68" height="52" rx="20"/>
+        <rect class="muscle" data-muscle="triceps" x="19" y="92" width="22" height="46" rx="11"/>
+        <rect class="muscle" data-muscle="triceps" x="159" y="92" width="22" height="46" rx="11"/>
+        <rect class="muscle" data-muscle="lower-back" x="78" y="142" width="44" height="34" rx="14"/>
+        <rect class="muscle" data-muscle="glutes" x="62" y="200" width="34" height="34" rx="16"/>
+        <rect class="muscle" data-muscle="glutes" x="104" y="200" width="34" height="34" rx="16"/>
+        <rect class="muscle" data-muscle="hamstrings" x="64" y="232" width="30" height="76" rx="15"/>
+        <rect class="muscle" data-muscle="hamstrings" x="106" y="232" width="30" height="76" rx="15"/>
+        <rect class="muscle" data-muscle="calves" x="67" y="314" width="24" height="72" rx="12"/>
+        <rect class="muscle" data-muscle="calves" x="109" y="314" width="24" height="72" rx="12"/>
+      </svg>
+    </div>
+  </section>
+
+  <ul class="legend">
+    <li><span class="dot dot--primary"></span>Músculos primarios</li>
+    <li><span class="dot dot--secondary"></span>Músculos secundarios</li>
+    <li><span class="dot dot--none"></span>Sin trabajo directo</li>
+  </ul>
+
+  <main>
+    <p class="warmup" id="warmup"></p>
+    <ul class="exlist" id="exlist"></ul>
+  </main>
+
+  <p class="colophon">6 días · 30 ejercicios · el mapa muscular es una guía aproximada, no un diagrama clínico. Cargados en Garmin Connect con animación en cada ejercicio.</p>
+</div>
+
+<script>
+  const DAYS = [
+    {
+      id: 'a', letter: 'A', name: 'Empuje', cat: 'push',
+      focus: 'Pecho · Hombros · Tríceps',
+      warmupMin: 6,
+      muscles: { chest: 'primary', shoulders: 'primary', triceps: 'primary' },
+      exercises: [
+        { name: 'Press de pectorales a un solo brazo y con polea', sets: 3, reps: 12, rest: '1:30', tag: 'Pecho',
+          cue: 'Con la polea a la altura del pecho, empuja el agarre hacia adelante con un brazo, como si alejaras algo de tu pecho. Primero un brazo, luego el otro.' },
+        { name: 'Crossover con polea', sets: 3, reps: 12, rest: '1:30', tag: 'Pecho (interior)',
+          cue: 'De pie entre dos poleas altas, junta las manos por delante del cuerpo describiendo un arco, como si abrazaras un árbol.' },
+        { name: 'Press por encima de la cabeza con máquina Smith', sets: 3, reps: 10, rest: '1:30', tag: 'Hombros',
+          cue: 'Sentado en la máquina Smith, empuja la barra hacia arriba hasta casi estirar los brazos por encima de la cabeza.' },
+        { name: 'Elevación lateral de polea a un solo brazo', sets: 3, reps: 10, rest: '1:00', tag: 'Hombros (lateral)',
+          cue: 'De pie junto a una polea baja, sube el brazo estirado hacia el costado hasta la altura del hombro.' },
+        { name: 'Press hacia abajo con cuerda', sets: 3, reps: 10, rest: '1:00', tag: 'Tríceps',
+          cue: 'De pie frente a la polea alta con una cuerda, empuja hacia abajo hasta estirar completamente los brazos.' }
+      ]
+    },
+    {
+      id: 'b', letter: 'B', name: 'Tracción', cat: 'pull',
+      focus: 'Espalda · Bíceps',
+      warmupMin: 6,
+      muscles: { 'upper-back': 'primary', 'lower-back': 'secondary', shoulders: 'secondary', biceps: 'primary' },
+      exercises: [
+        { name: 'Jalón con polea con agarre invertido', sets: 3, reps: 10, rest: '1:00', tag: 'Espalda (dorsales)',
+          cue: 'Sentado en la máquina de jalón, tira de la barra hacia el pecho con las palmas mirando hacia ti.' },
+        { name: 'Remo sentado con cable con agarre inferior', sets: 3, reps: 10, rest: '1:00', tag: 'Espalda media',
+          cue: 'Sentado frente a la polea baja, tira del agarre hacia el abdomen juntando los omóplatos.' },
+        { name: 'Curl de bíceps con barra', sets: 3, reps: 10, rest: '1:00', tag: 'Bíceps',
+          cue: 'De pie con una barra, dobla los codos para subirla hacia los hombros sin mover los brazos del cuerpo.' },
+        { name: 'Vuelo inclinado con mancuernas', sets: 3, reps: 10, rest: '1:00', tag: 'Espalda alta',
+          cue: 'Inclinado hacia adelante sobre un banco, abre los brazos con mancuernas hacia los costados como si volaras.' }
+      ]
+    },
+    {
+      id: 'c', letter: 'C', name: 'Piernas', cat: 'legs',
+      focus: 'Cuádriceps · Isquiotibiales · Pantorrillas',
+      warmupMin: 6,
+      muscles: { quads: 'primary', glutes: 'secondary', hamstrings: 'primary', calves: 'primary' },
+      exercises: [
+        { name: 'Press de piernas', sets: 3, reps: 10, rest: '1:00', tag: 'Cuádriceps / glúteos',
+          cue: 'Sentado en la máquina de prensa, empuja la plataforma con los pies hasta casi estirar las piernas.' },
+        { name: 'Sentadilla trasera', sets: 3, reps: 10, rest: '1:00', tag: 'Cuádriceps / glúteos',
+          cue: 'Con la barra apoyada en la espalda alta, baja como si te sentaras en una silla y vuelve a subir.' },
+        { name: 'Extensiones de piernas lastradas', sets: 3, reps: 10, rest: '1:00', tag: 'Cuádriceps',
+          cue: 'Sentado en la máquina, estira las piernas hacia adelante levantando el peso hasta casi trabarlas.' },
+        { name: 'Curl de pierna', sets: 3, reps: 10, rest: '1:00', tag: 'Isquiotibiales',
+          cue: 'Boca abajo o sentado en la máquina, flexiona las rodillas llevando el peso hacia los glúteos.' },
+        { name: 'Elevación de talones de pie', sets: 3, reps: 10, rest: '1:00', tag: 'Pantorrillas',
+          cue: 'De pie, sube los talones lo más alto posible apoyado en las puntas de los pies y baja controlado.' }
+      ]
+    },
+    {
+      id: 'd', letter: 'D', name: 'Empuje superior', cat: 'push',
+      focus: 'Pecho · Hombros · Tríceps (mancuernas)',
+      warmupMin: 6,
+      muscles: { chest: 'primary', shoulders: 'primary', triceps: 'primary' },
+      exercises: [
+        { name: 'Press de banca con mancuernas', sets: 3, reps: 10, rest: '1:00', tag: 'Pecho',
+          cue: 'Acostado en el banco, empuja las mancuernas hacia arriba desde la altura del pecho hasta estirar los brazos.' },
+        { name: 'Press militar', sets: 3, reps: 10, rest: '1:00', tag: 'Hombros',
+          cue: 'De pie o sentado, empuja el peso desde la altura de los hombros hacia arriba, por encima de la cabeza.' },
+        { name: 'Aperturas con mancuernas en banco inclinado', sets: 3, reps: 10, rest: '1:00', tag: 'Pecho superior',
+          cue: 'Acostado en un banco inclinado, abre y cierra los brazos con mancuernas como dando un abrazo.' },
+        { name: 'Extensión de tríceps tumbado y con polea', sets: 3, reps: 10, rest: '1:00', tag: 'Tríceps',
+          cue: 'Acostado, con la polea detrás de la cabeza, estira los brazos hacia atrás hasta enderezarlos.' },
+        { name: 'Elevación lateral con mancuerna', sets: 3, reps: 10, rest: '1:00', tag: 'Hombros (lateral)',
+          cue: 'De pie, sube las mancuernas hacia los costados hasta la altura del hombro, con los codos ligeramente flexionados.' }
+      ]
+    },
+    {
+      id: 'e', letter: 'E', name: 'Fuerza inferior', cat: 'legs',
+      focus: 'Cuádriceps · Glúteos · Isquiotibiales (barra)',
+      warmupMin: 6,
+      muscles: { quads: 'primary', glutes: 'primary', hamstrings: 'primary', 'lower-back': 'primary', calves: 'primary' },
+      exercises: [
+        { name: 'Sentadilla con barra', sets: 3, reps: 10, rest: '1:00', tag: 'Cuádriceps / glúteos',
+          cue: 'Con la barra en la espalda, baja doblando rodillas y cadera a la vez, y vuelve a subir.' },
+        { name: 'Peso muerto con barra', sets: 3, reps: 10, rest: '1:00', tag: 'Glúteos / isquios / espalda baja',
+          cue: 'Levanta la barra del piso manteniendo la espalda recta, empujando con cadera y piernas.' },
+        { name: 'Zancada con mancuernas', sets: 3, reps: 10, rest: '1:00', tag: 'Cuádriceps / glúteos',
+          cue: 'Con una mancuerna en cada mano, da un paso largo hacia adelante y baja la rodilla trasera casi hasta el piso.' },
+        { name: 'Puente de glúteos con goma elástica', sets: 3, reps: 10, rest: '1:00', tag: 'Glúteos',
+          cue: 'Acostado boca arriba con las rodillas dobladas, empuja la cadera hacia arriba apretando los glúteos.' },
+        { name: 'Elevación de talones de pie con barra', sets: 3, reps: 10, rest: '1:00', tag: 'Pantorrillas',
+          cue: 'Igual que en el día de piernas, pero con la barra apoyada sobre los hombros para más peso.' }
+      ]
+    },
+    {
+      id: 'f', letter: 'F', name: 'Core y acondicionamiento', cat: 'core',
+      focus: 'Abdomen · Oblicuos · Cardio corto',
+      warmupMin: 6,
+      muscles: { abs: 'primary', obliques: 'primary', shoulders: 'secondary', quads: 'secondary' },
+      exercises: [
+        { name: 'Plancha', sets: 3, reps: 10, rest: '1:00', tag: 'Abdomen',
+          cue: 'Apoyado en los antebrazos y las puntas de los pies, mantén el cuerpo recto como una tabla sin dejar caer la cadera.' },
+        { name: 'Elevación de piernas colgado', sets: 3, reps: 10, rest: '1:00', tag: 'Abdomen bajo',
+          cue: 'Colgado de una barra con los brazos estirados, sube las piernas hacia el pecho sin balancearte.' },
+        { name: 'Giro ruso', sets: 3, reps: 10, rest: '1:00', tag: 'Oblicuos',
+          cue: 'Sentado con el torso inclinado hacia atrás y los pies levantados, gira de lado a lado tocando el piso.' },
+        { name: 'Crunch de bicicleta', sets: 3, reps: 10, rest: '1:00', tag: 'Abdomen / oblicuos',
+          cue: 'Acostado boca arriba, lleva el codo hacia la rodilla contraria alternando, como si pedalearas.' },
+        { name: 'Escalador de montaña', sets: 3, reps: 10, rest: '1:00', tag: 'Abdomen / cardio',
+          cue: 'En posición de plancha con los brazos estirados, lleva las rodillas al pecho alternando rápido, como si escalaras.' }
+      ]
+    }
+  ];
+
+  const ALL_MUSCLE_KEYS = ['chest','shoulders','biceps','triceps','upper-back','lower-back','abs','obliques','quads','hamstrings','glutes','calves'];
+
+  const tabsEl = document.getElementById('tabs');
+  const appEl = document.getElementById('app');
+
+  DAYS.forEach(day => {
+    const btn = document.createElement('button');
+    btn.className = 'tab';
+    btn.id = 'tab-' + day.id;
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-selected', 'false');
+    btn.style.setProperty('--tabcat', `var(--cat-${day.cat})`);
+    btn.innerHTML = `<span class="tab__letter">${day.letter}</span><span>${day.name}</span>`;
+    btn.addEventListener('click', () => renderDay(day.id));
+    tabsEl.appendChild(btn);
+  });
+
+  function applyMuscles(map) {
+    ALL_MUSCLE_KEYS.forEach(key => {
+      const state = map[key] || 'none';
+      document.querySelectorAll(`[data-muscle="${key}"]`).forEach(el => el.setAttribute('data-state', state));
+    });
+  }
+
+  function renderDay(id) {
+    const day = DAYS.find(d => d.id === id);
+    if (!day) return;
+
+    DAYS.forEach(d => {
+      const t = document.getElementById('tab-' + d.id);
+      t.setAttribute('aria-selected', d.id === id ? 'true' : 'false');
+    });
+
+    appEl.style.setProperty('--cat', `var(--cat-${day.cat})`);
+    document.getElementById('dayName').textContent = day.letter + ' · ' + day.name;
+    document.getElementById('dayFocusText').textContent = day.focus;
+    document.getElementById('warmup').innerHTML = `<strong>Calentamiento</strong> — ${day.warmupMin}:00 cardio`;
+
+    applyMuscles(day.muscles);
+
+    const ul = document.getElementById('exlist');
+    ul.innerHTML = '';
+    day.exercises.forEach(ex => {
+      const li = document.createElement('li');
+      li.className = 'exercise';
+      li.innerHTML = `
+        <div class="exercise__row">
+          <h3>${ex.name}</h3>
+          <span class="tag">${ex.tag}</span>
+        </div>
+        <p class="meta">${ex.sets} series &times; ${ex.reps} rep &middot; descanso ${ex.rest}</p>
+        <p class="cue">${ex.cue}</p>
+      `;
+      ul.appendChild(li);
+    });
+  }
+
+  renderDay('a');
+</script>
+
+</body>
+</html>
